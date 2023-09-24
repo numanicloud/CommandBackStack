@@ -38,10 +38,9 @@ public static class CommandPipe
                 });
         }).ToArray();
 
-        var q = pipes.Aggregate(
-            Unit.Id.ToCommandPipe(),
-            (seed, x) => seed.Bind(_ => x))
+        var pipe = pipes.Aggregate(Entry(), (seed, x) => seed.Bind(_ => x))
             .Map(_ => result.AsEnumerable().Just());
-        return q;
+        
+        return pipe;
     }
 }

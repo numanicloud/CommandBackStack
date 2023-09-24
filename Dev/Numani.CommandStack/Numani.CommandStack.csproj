@@ -8,8 +8,7 @@
 
 
 
-  <ItemGroup>
-    <Folder Include="Continuation\" />
-  </ItemGroup>
+
+
 
 </Project>
