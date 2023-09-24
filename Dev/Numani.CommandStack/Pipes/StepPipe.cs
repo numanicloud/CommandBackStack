@@ -5,10 +5,10 @@ using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes;
 
-public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
+public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe<TSource, TFinal>
 {
     public required Func<TSource, Task<IMaybe<TMap>>> Function { get; init; }
-    public required ICommandPipe2<TMap, TFinal> Rest { get; init; }
+    public required ICommandPipe<TMap, TFinal> Rest { get; init; }
     
     public async Task<IMaybe<TFinal>> RunAsync(TSource source)
     {
@@ -28,7 +28,7 @@ public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFi
         return finalJust;
     }
 
-    public ICommandPipe2<TSource, TNewFinal> WithTail<TNewFinal>(ICommandPipe2<TFinal, TNewFinal> tail)
+    public ICommandPipe<TSource, TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail)
     {
         return new StepPipe<TSource, TMap, TNewFinal>()
         {

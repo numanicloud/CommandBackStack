@@ -4,15 +4,15 @@ using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes;
 
-public sealed class TailPipe<TFinal> : ICommandPipe2<TFinal, TFinal>
+public sealed class TailPipe<TFinal> : ICommandPipe<TFinal, TFinal>
 {
     public async Task<IMaybe<TFinal>> RunAsync(TFinal source)
     {
         return source.Just();
     }
 
-    public ICommandPipe2<TFinal, TNewFinal> WithTail<TNewFinal>(
-        ICommandPipe2<TFinal, TNewFinal> tail)
+    public ICommandPipe<TFinal, TNewFinal> WithTail<TNewFinal>(
+        ICommandPipe<TFinal, TNewFinal> tail)
     {
         return tail;
     }
