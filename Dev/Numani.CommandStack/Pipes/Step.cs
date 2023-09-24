@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 using Numani.CommandStack.TaskMaybe;
 
@@ -8,17 +10,15 @@ namespace Numani.CommandStack.Pipes
 		CommandBody<TArg, TResult> Function,
 		ICommandPipe<TResult, TFinal> Rest) : ICommandPipe<TArg, TFinal>
 	{
-		public async Task<IMaybe<TFinal>> Run(TArg arg)
+		public async Task<IMaybe<TFinal>> Run(TArg arg, Logger logger)
 		{
+			logger.OutputLog("Step");
 			while (true)
 			{
 				var result = await Function.Invoke(arg)
-					.Bind(async x => (await Rest.Run(x)).Just());
+					.Bind(async x => (await Rest.Run(x, logger)).Just());
 
-				if (result is Just<IMaybe<TFinal>> { Value: Nothing<TFinal> })
-				{
-					continue;
-				}
+				if (result is Just<IMaybe<TFinal>> { Value: Nothing<TFinal> }) continue;
 
 				return result.Join();
 			}
@@ -29,12 +29,16 @@ namespace Numani.CommandStack.Pipes
 
 		public override string ToString()
 		{
-			var arg = typeof(TArg).Name;
-			var result = typeof(TResult).Name;
-			var final = typeof(TFinal).Name;
+			var arg = typeof(TArg).ParameterizedName();
+			var result = typeof(TResult).ParameterizedName();
+			var final = typeof(TFinal).ParameterizedName();
 			return $"Step<{arg}, {result}, {final}> ({arg} -> {result})";
 		}
 
-		public string GetTreeString() => ToString() + "\n" + Rest.GetTreeString();
+		public string GetTreeString(int line) =>
+			$"""
+			 {line:00}: {ToString()}
+			 {Rest.GetTreeString(line + 1)}
+			 """;
 	}
 }

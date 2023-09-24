@@ -5,8 +5,8 @@ namespace Numani.CommandStack.Pipes
 {
 	internal interface ICommandPipe<in TArg, TFinal>
 	{
-		string GetTreeString();
-		Task<IMaybe<TFinal>> Run(TArg arg);
+		string GetTreeString(int line);
+		Task<IMaybe<TFinal>> Run(TArg arg, Logger logger);
 		ICommandPipe<TArg, TNewFinal> Then<TNewFinal>(ICommandPipe<TFinal, TNewFinal> commandPipe);
 
 		public ICommandPipe<TArg, TNewFinal> Then<TNewFinal>(CommandBody<TFinal, TNewFinal> func)

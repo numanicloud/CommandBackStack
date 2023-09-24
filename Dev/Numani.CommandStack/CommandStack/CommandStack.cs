@@ -14,11 +14,12 @@ namespace Numani.CommandStack
 			_head = head;
 		}
 
-		public async Task<TFinal> RunAsync(TArg arg)
+		public async Task<TFinal> RunAsync(TArg arg, bool showLog = false)
 		{
+			var logger = new Logger(showLog);
 			while (true)
 			{
-				if (await _head.Run(arg) is Just<TFinal> final)
+				if (await _head.Run(arg, logger) is Just<TFinal> final)
 				{
 					return final.Value;
 				}
@@ -41,6 +42,25 @@ namespace Numani.CommandStack
 				return p.Just();
 			}));
 
-		public override string ToString() => _head.GetTreeString();
+		public override string ToString() => _head.GetTreeString(0);
+	}
+
+	internal sealed class Logger
+	{
+		private readonly bool _showLog;
+		private int _currentLine = 0;
+
+		public Logger(bool showLog)
+		{
+			_showLog = showLog;
+		}
+		
+		public void OutputLog(string title)
+		{
+			if (!_showLog) return;
+
+			Console.WriteLine($"[CommandStack] {_currentLine}: {title}");
+			_currentLine += 1;
+		}
 	}
 }

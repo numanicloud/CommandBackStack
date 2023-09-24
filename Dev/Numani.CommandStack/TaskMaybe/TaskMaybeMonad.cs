@@ -8,10 +8,11 @@ namespace Numani.CommandStack.TaskMaybe
 	public static class TaskMaybeMonad
 	{
 		public static Task<IMaybe<TResult>> FMap<T, TResult>(
-			this Task<IMaybe<T>> m, Func<T, TResult> mapper)
+			this Task<IMaybe<T>> m, Func<T, TResult> mapper,
+			TaskScheduler? taskScheduler = null)
 		{
 			return m.ContinueWith(x => x.Result.FMap(mapper),
-				TaskScheduler.FromCurrentSynchronizationContext());
+				taskScheduler ?? TaskScheduler.FromCurrentSynchronizationContext());
 		}
 
 		public static Task<IMaybe<T>> Join<T>(this Task<IMaybe<Task<IMaybe<T>>>> monad)
