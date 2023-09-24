@@ -8,18 +8,22 @@ namespace Numani.CommandStack.Pipes2;
 
 public static class CommandPipe
 {
-    public static ICommandPipe2<T, T> Entry<T>()
+    public static ICommandPipe2<Unit> Entry()
     {
-        return new Tail2<T>();
+        return new EntryPipe<Unit, Unit>()
+        {
+            Initial = Unit.Id,
+            Rest = new Tail2<Unit>()
+        };
     }
 
-    public static ICommandPipe2<Unit, IEnumerable<TFinal>> ForEach2<TEntity, TFinal>(
+    public static ICommandPipe2<IEnumerable<TFinal>> ForEach<TEntity, TFinal>(
         IEnumerable<TEntity> source,
-        Func<TEntity, ICommandPipe2<Unit, TFinal>> iterator)
+        Func<TEntity, ICommandPipe2<TFinal>> iterator)
     {
         var array = source.ToArray();
         var result = new TFinal[array.Length];
-        
+
         var pipes = array.Select((x, i) =>
         {
             return iterator(x)
@@ -34,7 +38,10 @@ public static class CommandPipe
                 });
         }).ToArray();
 
-        return pipes.Aggregate(Entry<Unit>(), (seed, x) => seed.Concat(x))
+        var q = pipes.Aggregate(
+            Unit.Id.ToCommandPipe(),
+            (seed, x) => seed.Bind(_ => x))
             .Map(_ => result.AsEnumerable().Just());
+        return q;
     }
 }
