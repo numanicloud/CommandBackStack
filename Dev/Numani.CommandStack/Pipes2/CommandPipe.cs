@@ -20,16 +20,19 @@ public static class CommandPipe
         var array = source.ToArray();
         var result = new TFinal[array.Length];
         
-        var pipes = array.Select((x, i) => iterator(x)
-            .WithTail(new Map2<TFinal, Unit, Unit>()
-            {
-                Mapper = k =>
+        var pipes = array.Select((x, i) =>
+        {
+            return iterator(x)
+                .WithTail(new Map2<TFinal, Unit, Unit>()
                 {
-                    result[i] = k;
-                    return Unit.Id.Just();
-                },
-                Rest = new Tail2<Unit>()
-            })).ToArray();
+                    Mapper = k =>
+                    {
+                        result[i] = k;
+                        return Unit.Id.Just();
+                    },
+                    Rest = new Tail2<Unit>()
+                });
+        }).ToArray();
 
         return pipes.Aggregate(Entry<Unit>(), (seed, x) => seed.Concat(x))
             .Map(_ => result.AsEnumerable().Just());
