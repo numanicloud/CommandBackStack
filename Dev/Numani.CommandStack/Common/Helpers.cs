@@ -15,4 +15,11 @@ public static class Helpers
             ? $"[{string.Join(',', arguments1)}]"
             : "");
     }
+    
+    public static string Indent(this string lines, int level)
+    {
+        var map = lines.Split(Environment.NewLine)
+            .Select(x => string.Join("", Enumerable.Repeat("\t", level)) + x);
+        return string.Join(Environment.NewLine, map);
+    }
 }

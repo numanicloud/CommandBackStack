@@ -4,7 +4,7 @@ using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes2;
 
-public sealed class Tail2<TFinal> : ICommandPipe2<TFinal, TFinal>
+public sealed class Tail<TFinal> : ICommandPipe2<TFinal, TFinal>
 {
     public async Task<IMaybe<TFinal>> RunAsync(TFinal source)
     {

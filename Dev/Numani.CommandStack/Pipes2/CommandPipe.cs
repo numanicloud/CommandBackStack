@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
@@ -14,7 +13,7 @@ public static class CommandPipe
         return new EntryPipe<Unit, Unit>()
         {
             Initial = Unit.Id,
-            Rest = new Tail2<Unit>()
+            Rest = new Tail<Unit>()
         };
     }
 
@@ -35,7 +34,7 @@ public static class CommandPipe
                         result[i] = k;
                         return Unit.Id.Just();
                     },
-                    Rest = new Tail2<Unit>()
+                    Rest = new Tail<Unit>()
                 });
         }).ToArray();
 

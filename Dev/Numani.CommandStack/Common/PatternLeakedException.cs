@@ -6,11 +6,6 @@ public class PatternLeakedException : Exception
 {
 	public object? ActualValue { get; }
 
-	public PatternLeakedException()
-	{
-		ActualValue = null;
-	}
-
 	public PatternLeakedException(object actualValue)
 	{
 		ActualValue = actualValue;

@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
+    <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
 
 
