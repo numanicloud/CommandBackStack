@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes;
 
 public sealed class EntryPipe<TArg, TFinal> : ICommandPipe2<TFinal>
 {

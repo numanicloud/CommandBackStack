@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes;
 
-public sealed class Map2<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
+public sealed class MapPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
 {
     public required Func<TSource, IMaybe<TMap>> Mapper { get; init; }
     public required ICommandPipe2<TMap, TFinal> Rest { get; init; }
@@ -24,7 +24,7 @@ public sealed class Map2<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
     public ICommandPipe2<TSource, TNewFinal> WithTail<TNewFinal>(
         ICommandPipe2<TFinal, TNewFinal> tail)
     {
-        return new Map2<TSource, TMap, TNewFinal>()
+        return new MapPipe<TSource, TMap, TNewFinal>()
         {
             Mapper = Mapper,
             Rest = Rest.WithTail(tail)

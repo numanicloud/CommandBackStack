@@ -2,9 +2,9 @@
 using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes;
 
-public sealed class Tail<TFinal> : ICommandPipe2<TFinal, TFinal>
+public sealed class TailPipe<TFinal> : ICommandPipe2<TFinal, TFinal>
 {
     public async Task<IMaybe<TFinal>> RunAsync(TFinal source)
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes.Helpers;
 
 public static class CommandPipe
 {
@@ -13,7 +13,7 @@ public static class CommandPipe
         return new EntryPipe<Unit, Unit>()
         {
             Initial = Unit.Id,
-            Rest = new Tail<Unit>()
+            Rest = new TailPipe<Unit>()
         };
     }
 
@@ -27,14 +27,14 @@ public static class CommandPipe
         var pipes = array.Select((x, i) =>
         {
             return iterator(x)
-                .WithTail(new Map2<TFinal, Unit, Unit>()
+                .WithTail(new MapPipe<TFinal, Unit, Unit>()
                 {
                     Mapper = k =>
                     {
                         result[i] = k;
                         return Unit.Id.Just();
                     },
-                    Rest = new Tail<Unit>()
+                    Rest = new TailPipe<Unit>()
                 });
         }).ToArray();
 

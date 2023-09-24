@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes;
 
-public sealed class Step2<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
+public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
 {
     public required Func<TSource, Task<IMaybe<TMap>>> Function { get; init; }
     public required ICommandPipe2<TMap, TFinal> Rest { get; init; }
@@ -30,7 +30,7 @@ public sealed class Step2<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal
 
     public ICommandPipe2<TSource, TNewFinal> WithTail<TNewFinal>(ICommandPipe2<TFinal, TNewFinal> tail)
     {
-        return new Step2<TSource, TMap, TNewFinal>()
+        return new StepPipe<TSource, TMap, TNewFinal>()
         {
             Function = Function,
             Rest = Rest.WithTail(tail)

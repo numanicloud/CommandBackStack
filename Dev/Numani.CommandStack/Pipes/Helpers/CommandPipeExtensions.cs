@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes.Helpers;
 
 public static class CommandPipeExtensions
 {
@@ -22,10 +22,10 @@ public static class CommandPipeExtensions
         this ICommandPipe2<TMap> origin,
         Func<TMap, IMaybe<TFinal>> mapper)
     {
-        return origin.WithTail(new Map2<TMap, TFinal, TFinal>()
+        return origin.WithTail(new MapPipe<TMap, TFinal, TFinal>()
         {
             Mapper = mapper,
-            Rest = new Tail<TFinal>()
+            Rest = new TailPipe<TFinal>()
         });
     }
 
@@ -33,10 +33,10 @@ public static class CommandPipeExtensions
         this ICommandPipe2<TValue> origin,
         Func<TValue, Task<IMaybe<TFinal>>> process)
     {
-        return origin.WithTail(new Step2<TValue, TFinal, TFinal>()
+        return origin.WithTail(new StepPipe<TValue, TFinal, TFinal>()
         {
             Function = process,
-            Rest = new Tail<TFinal>()
+            Rest = new TailPipe<TFinal>()
         });
     }
 
@@ -46,7 +46,7 @@ public static class CommandPipeExtensions
     {
         return origin.WithTail(new BindPipe<TValue, TFinal, TFinal>()
         {
-            Rest = new Tail<TFinal>(),
+            Rest = new TailPipe<TFinal>(),
             Binder = binder
         });
     }
@@ -56,7 +56,7 @@ public static class CommandPipeExtensions
         return new EntryPipe<TArg, TArg>()
         {
             Initial = initial,
-            Rest = new Tail<TArg>()
+            Rest = new TailPipe<TArg>()
         };
     }
 }

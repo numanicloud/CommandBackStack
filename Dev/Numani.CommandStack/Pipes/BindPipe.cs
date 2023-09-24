@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 
-namespace Numani.CommandStack.Pipes2;
+namespace Numani.CommandStack.Pipes;
 
 public sealed class BindPipe<TContext, TResult, TFinal> : ICommandPipe2<TContext, TFinal>
 {
