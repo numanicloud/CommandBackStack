@@ -1,7 +1,6 @@
-﻿namespace Numani.CommandStack
+﻿namespace Numani.CommandStack.Common;
+
+public struct Unit
 {
-	public struct Unit
-	{
-		public static Unit Id => new();
-	}
+	public static Unit Id => new();
 }

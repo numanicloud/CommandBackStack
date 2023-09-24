@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes2;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Numani.CommandStack.Common;
 using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes2;
