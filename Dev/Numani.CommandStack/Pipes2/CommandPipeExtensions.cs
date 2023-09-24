@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 
@@ -6,6 +7,13 @@ namespace Numani.CommandStack.Pipes2;
 
 public static class CommandPipeExtensions
 {
+    public static string Indent(this string lines, int level)
+    {
+        var map = lines.Split(Environment.NewLine)
+            .Select(x => string.Join("", Enumerable.Repeat("\t", level)) + x);
+        return string.Join(Environment.NewLine, map);
+    }
+    
     public static async Task<TFinal> RunAsRootAsync<TSource, TFinal>(
         this ICommandPipe2<TSource, TFinal> pipe,
         TSource source)
@@ -48,6 +56,17 @@ public static class CommandPipeExtensions
         return origin.WithTail(new DynamicPipe<TMap, TFinal, TFinal>()
         {
             Generator = generator,
+            Rest = new Tail2<TFinal>()
+        });
+    }
+
+    public static ICommandPipe2<TSource, TFinal> Concat<TSource, TMap, TFinal>(
+        this ICommandPipe2<TSource, TMap> origin,
+        ICommandPipe2<TMap, TFinal> second)
+    {
+        return origin.WithTail(new PipeGroup<TMap, TFinal, TFinal>()
+        {
+            Embedded = second,
             Rest = new Tail2<TFinal>()
         });
     }

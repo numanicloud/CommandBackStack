@@ -1,18 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes2;
 
-public sealed class DynamicPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
+public sealed class PipeGroup<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
 {
-    public required Func<TSource, ICommandPipe2<TSource, TMap>> Generator { get; init; }
+    public required ICommandPipe2<TSource, TMap> Embedded { get; init; }
     public required ICommandPipe2<TMap, TFinal> Rest { get; init; }
 
     public async Task<IMaybe<TFinal>> RunAsync(TSource source)
     {
     Back:
-        var main = await Generator.Invoke(source).RunAsync(source);
+        var main = await Embedded.RunAsync(source);
         if (main is not Just<TMap> map)
         {
             return Maybe.Maybe.Nothing<TFinal>();
@@ -30,9 +29,9 @@ public sealed class DynamicPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, 
     public ICommandPipe2<TSource, TNewFinal> WithTail<TNewFinal>(
         ICommandPipe2<TFinal, TNewFinal> tail)
     {
-        return new DynamicPipe<TSource, TMap, TNewFinal>()
+        return new PipeGroup<TSource, TMap, TNewFinal>()
         {
-            Generator = Generator,
+            Embedded = Embedded,
             Rest = Rest.WithTail(tail)
         };
     }
@@ -44,8 +43,9 @@ public sealed class DynamicPipe<TSource, TMap, TFinal> : ICommandPipe2<TSource, 
         var final = typeof(TFinal).ParameterizedName();
         return
             $"""
-            DynamicPipe ({source} -> {map}) -> {final}
-            {Rest.ToTreeString(0)}
-            """.Indent(indent);
+             PipeGroup ({source} -> {map}) -> {final}
+             {Embedded.ToTreeString(1)}
+             {Rest.ToTreeString(0)}
+             """.Indent(indent);
     }
 }

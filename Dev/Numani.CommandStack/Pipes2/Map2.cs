@@ -29,4 +29,16 @@ public sealed class Map2<TSource, TMap, TFinal> : ICommandPipe2<TSource, TFinal>
             Rest = Rest.WithTail(tail)
         };
     }
+
+    public string ToTreeString(int indent)
+    {
+        var source = typeof(TSource).ParameterizedName();
+        var map = typeof(TMap).ParameterizedName();
+        var final = typeof(TFinal).ParameterizedName();
+        return
+            $"""
+            Map ({source} -> {map}) -> {final}
+            {Rest.ToTreeString(0)}
+            """.Indent(indent);
+    }
 }

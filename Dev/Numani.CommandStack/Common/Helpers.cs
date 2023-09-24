@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Numani.CommandStack
@@ -7,10 +8,13 @@ namespace Numani.CommandStack
     {
         public static string ParameterizedName(this Type type)
         {
-            var arguments = type.GenericTypeArguments.Select(x => x.Name).ToArray();
-            return arguments.Any()
-                ? type.Name + $"[{string.Join(',', arguments)}]"
-                : type.Name;
+            var arguments1 = type.GenericTypeArguments
+                .Select(ParameterizedName)
+                .ToArray();
+
+            return type.Name + (arguments1.Any()
+                ? $"[{string.Join(',', arguments1)}]"
+                : "");
         }
     }
 }

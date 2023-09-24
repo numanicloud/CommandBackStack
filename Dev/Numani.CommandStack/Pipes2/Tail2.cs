@@ -15,4 +15,10 @@ public sealed class Tail2<TFinal> : ICommandPipe2<TFinal, TFinal>
     {
         return tail;
     }
+
+    public string ToTreeString(int indent)
+    {
+        var final = typeof(TFinal).ParameterizedName();
+        return $"Tail {final}".Indent(indent);
+    }
 }
