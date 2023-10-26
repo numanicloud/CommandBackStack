@@ -3,10 +3,10 @@ using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes;
 
-public interface ICommandPipe2<TFinal>
+public interface ICommandPipe<TFinal>
 {
     Task<IMaybe<TFinal>> RunAsync();
-    ICommandPipe2<TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail);
+    ICommandPipe<TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail);
 }
 
 public interface ICommandPipe<in TArg, TFinal>

@@ -9,6 +9,7 @@ public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe<TSource, TFin
 {
     public required Func<TSource, Task<IMaybe<TMap>>> Function { get; init; }
     public required ICommandPipe<TMap, TFinal> Rest { get; init; }
+    public bool IsTrivial { private get; init; } = false;
     
     public async Task<IMaybe<TFinal>> RunAsync(TSource source)
     {
@@ -20,12 +21,17 @@ public sealed class StepPipe<TSource, TMap, TFinal> : ICommandPipe<TSource, TFin
         }
 
         var final = await Rest.RunAsync(stepJust.Value);
-        if (final is not Just<TFinal> finalJust)
+        if (final is Just<TFinal> finalJust)
         {
-            goto BackStep;
+            return finalJust;
         }
-
-        return finalJust;
+        
+        if (IsTrivial)
+        {
+            return Maybe.Maybe.Nothing<TFinal>();
+        }
+        
+        goto BackStep;
     }
 
     public ICommandPipe<TSource, TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail)

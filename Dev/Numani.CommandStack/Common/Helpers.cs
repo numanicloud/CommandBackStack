@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Numani.CommandStack.Common;
 
-public static class Helpers
+internal static class Helpers
 {
     public static string ParameterizedName(this Type type)
     {

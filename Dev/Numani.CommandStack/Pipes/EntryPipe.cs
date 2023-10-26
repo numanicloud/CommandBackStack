@@ -3,7 +3,7 @@ using Numani.CommandStack.Maybe;
 
 namespace Numani.CommandStack.Pipes;
 
-public sealed class EntryPipe<TArg, TFinal> : ICommandPipe2<TFinal>
+public sealed class EntryPipe<TArg, TFinal> : ICommandPipe<TFinal>
 {
     public required TArg Initial { get; init; }
     public required ICommandPipe<TArg, TFinal> Rest { get; init; }
@@ -13,7 +13,7 @@ public sealed class EntryPipe<TArg, TFinal> : ICommandPipe2<TFinal>
         return Rest.RunAsync(Initial);
     }
 
-    public ICommandPipe2<TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail)
+    public ICommandPipe<TNewFinal> WithTail<TNewFinal>(ICommandPipe<TFinal, TNewFinal> tail)
     {
         return new EntryPipe<TArg, TNewFinal>()
         {

@@ -8,7 +8,7 @@ namespace Numani.CommandStack.Pipes.Helpers;
 
 public static class CommandPipe
 {
-    public static ICommandPipe2<Unit> Entry()
+    public static ICommandPipe<Unit> Entry()
     {
         return new EntryPipe<Unit, Unit>()
         {
@@ -17,9 +17,9 @@ public static class CommandPipe
         };
     }
 
-    public static ICommandPipe2<IEnumerable<TFinal>> ForEach<TEntity, TFinal>(
+    public static ICommandPipe<IEnumerable<TFinal>> ForEach<TEntity, TFinal>(
         IEnumerable<TEntity> source,
-        Func<TEntity, ICommandPipe2<TFinal>> iterator)
+        Func<TEntity, ICommandPipe<TFinal>> iterator)
     {
         var array = source.ToArray();
         var result = new TFinal[array.Length];
@@ -38,9 +38,7 @@ public static class CommandPipe
                 });
         }).ToArray();
 
-        var pipe = pipes.Aggregate(Entry(), (seed, x) => seed.Bind(_ => x))
+        return pipes.Aggregate(Entry(), (seed, x) => seed.Bind(_ => x, true))
             .Map(_ => result.AsEnumerable().Just());
-        
-        return pipe;
     }
 }

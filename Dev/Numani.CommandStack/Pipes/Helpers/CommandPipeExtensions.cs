@@ -7,7 +7,7 @@ namespace Numani.CommandStack.Pipes.Helpers;
 public static class CommandPipeExtensions
 {
     public static async Task<TFinal> RunAsRootAsync<TFinal>(
-        this ICommandPipe2<TFinal> pipe)
+        this ICommandPipe<TFinal> pipe)
     {
         while (true)
         {
@@ -18,8 +18,8 @@ public static class CommandPipeExtensions
         }
     }
 
-    public static ICommandPipe2<TFinal> Map<TMap, TFinal>(
-        this ICommandPipe2<TMap> origin,
+    public static ICommandPipe<TFinal> Map<TMap, TFinal>(
+        this ICommandPipe<TMap> origin,
         Func<TMap, IMaybe<TFinal>> mapper)
     {
         return origin.WithTail(new MapPipe<TMap, TFinal, TFinal>()
@@ -29,8 +29,8 @@ public static class CommandPipeExtensions
         });
     }
 
-    public static ICommandPipe2<TFinal> Then<TValue, TFinal>(
-        this ICommandPipe2<TValue> origin,
+    public static ICommandPipe<TFinal> Then<TValue, TFinal>(
+        this ICommandPipe<TValue> origin,
         Func<TValue, Task<IMaybe<TFinal>>> process)
     {
         return origin.WithTail(new StepPipe<TValue, TFinal, TFinal>()
@@ -40,18 +40,20 @@ public static class CommandPipeExtensions
         });
     }
 
-    public static ICommandPipe2<TFinal> Bind<TValue, TFinal>(
-        this ICommandPipe2<TValue> origin,
-        Func<TValue, ICommandPipe2<TFinal>> binder)
+    public static ICommandPipe<TFinal> Bind<TValue, TFinal>(
+        this ICommandPipe<TValue> origin,
+        Func<TValue, ICommandPipe<TFinal>> binder,
+        bool isChunk = false)
     {
         return origin.WithTail(new BindPipe<TValue, TFinal, TFinal>()
         {
             Rest = new TailPipe<TFinal>(),
-            Binder = binder
+            Binder = binder,
+            IsChunk = isChunk
         });
     }
 
-    public static ICommandPipe2<TArg> ToCommandPipe<TArg>(this TArg initial)
+    public static ICommandPipe<TArg> ToCommandPipe<TArg>(this TArg initial)
     {
         return new EntryPipe<TArg, TArg>()
         {
